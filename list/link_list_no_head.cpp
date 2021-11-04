@@ -109,6 +109,13 @@ void printError(bool b,char* msg){
     }
 }
 
+/**
+ * 向表list的第index个位置，插入元素element
+ * @param list 线性表
+ * @param i 插入位置
+ * @param element 插入元素
+ * @return 是否插入成功
+ */
 bool ListInsert(LinkList &list, int i, Element element){
     if (i < 1) {
         return false;
