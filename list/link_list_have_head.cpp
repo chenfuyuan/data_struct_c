@@ -121,9 +121,7 @@ bool ListInsert(LinkList &list, int i, Element element){
     }
 
     //插入元素
-    InsertNextNode(p, element);
-
-    return true;
+    return InsertNextNode(p, element);
 }
 
 /**

@@ -113,8 +113,7 @@ bool ListInsert(LinkList &list, int i, Element element){
         return false;
     }
 
-    InsertNextNode(p, element);
-    return true;
+    return InsertNextNode(p, element);
 }
 
 /**
