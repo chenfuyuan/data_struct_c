@@ -19,10 +19,13 @@ typedef struct LNode *LinkList;    //线性表
  */
 
 //定义函数
-bool InitList(LinkList&);    //初始化线性表
-bool ListInsert(LinkList&,int,Element);    //插入数据
-void printError(bool,char*);
-bool printList(LinkList);
+bool InitList(LinkList&);    //初始化表
+LNode *getNewNode();    //获取一个新节点
+bool ListInsert(LinkList &, int, Element);    //按位置进行节点插入
+void printError(bool,char*);    //打印错误
+bool printList(LinkList);     //遍历链表
+bool InsertNextNode(LNode *, Element);    //将元素插入下一个节点
+
 int main(){
     LinkList list;
     InitList(list);
@@ -32,6 +35,24 @@ int main(){
     printList(list);
 
     return 0;
+}
+
+/**
+ * 将元素element插入节点node的下一个节点
+ * @param node 节点
+ * @param element 插入元素
+ * @return 是否插入成功
+ */
+bool InsertNextNode(LNode *node, Element element){
+    if (node == NULL) {
+        return false;
+    }
+
+    LNode *newNode = getNewNode();
+    newNode->data = element;
+    newNode->next = node->next;
+    node->next = newNode;
+    return true;
 }
 
 
@@ -100,10 +121,7 @@ bool ListInsert(LinkList &list, int i, Element element){
     }
 
     //插入元素
-    LNode *node = getNewNode();   //初始化节点
-    node->data = element;    //赋值元素
-    node->next = p->next;    //将原本在i位置的节点，链接到新节点的后面
-    p->next = node;    //将新节点链接到i位置
+    InsertNextNode(p, element);
 
     return true;
 }
