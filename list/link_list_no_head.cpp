@@ -24,7 +24,8 @@ LNode *getNewNode();    //获取一个新节点
 bool ListInsert(LinkList &, int, Element);    //按位置进行节点插入
 void printError(bool,char*);    //打印错误
 bool printList(LinkList);     //遍历链表
-bool InsertNextNode(LNode *, Element);    //将元素插入下一个节点
+bool InsertNextNode(LNode *, Element);    //将元素插入指定节点(后插)
+bool InsertPriorNode(LNode *, Element);    //将元素插入指定节点(前插)
 
 int main(){
     LinkList list;
@@ -35,6 +36,28 @@ int main(){
     printList(list);
 
     return 0;
+}
+
+/**
+ * 将元素element插入节点node的前一个节点
+ * @param node 节点
+ * @param element 插入元素
+ * @return 是否插入成功
+ */
+bool InsertPriorNode(LNode *node, Element element) {
+    if (node == NULL) {
+        return false;
+    }
+    //声明一个新节点，链接到node节点后面
+    LNode *newNode = getNewNode();
+    newNode->next = node->next;
+    node->next = newNode;
+
+    //交换数据域
+    Element temp = node->data;
+    node->data = element;
+    newNode->data = temp;
+    return true;
 }
 
 /**
