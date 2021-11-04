@@ -26,6 +26,8 @@ void printError(bool,char*);    //打印错误
 bool printList(LinkList);     //遍历链表
 bool InsertNextNode(LNode *, Element);    //将元素插入指定节点(后插)
 bool InsertPriorNode(LNode *, Element);    //将元素插入指定节点(前插)
+bool ListDelete(LinkList &, int, Element&);    //按位置删除元素
+LNode* getPriorNode(LinkList &, int);    //获取指定位置 前一个节点
 
 int main(){
     LinkList list;
@@ -35,7 +37,62 @@ int main(){
     printError(isSuccess, "插入");
     printList(list);
 
+    Element deleteReuslt = 0;
+    isSuccess = ListDelete(list, 2, deleteReuslt);
+    printError(isSuccess, "删除失败");
+    printf("deleteResult:%d\n", deleteReuslt);
+
     return 0;
+}
+
+/**
+ * 获取表list 第i个位置 前一个节点
+ * @param list 表
+ * @param i 位置
+ * @return 表list第i个位置的前一个节点
+ */
+LNode* getPriorNode(LinkList &list, int i){
+    LNode *p = list;
+    int j = 0;
+    while (p != NULL && j < i - 1) {
+        p = p->next;
+        j++;
+    }
+    return p;
+}
+
+/**
+ * 将表list的第i个位置的元素删除，并赋值到element变量中进行返回
+ * @param list 表
+ * @param i 要删除元素的位置
+ * @param element 放置删除元素的变量
+ * @return 是否删除成功
+ */
+bool ListDelete(LinkList &list, int i, Element &element){
+    if (i < 1) {
+        return false;
+    }
+
+    //寻找位置i的前一个节点
+    LNode *p = getPriorNode(list, i);
+
+    //i值不合法
+    if (p == NULL) {
+        return false;
+    }
+
+    //第i个位置本来就是空的
+    if (p->next == NULL) {
+        return false;
+    }
+
+
+    LNode* nextNode = p->next;    //要被删除的节点
+    element = nextNode->data;    //提取要被删除的数据
+    //删除元素
+    p->next = nextNode->next;
+    free(nextNode);
+    return true;
 }
 
 /**
@@ -131,12 +188,7 @@ bool ListInsert(LinkList &list, int i, Element element){
     }
     LNode *p;
     int j=0;
-    p = list;
-    //将指针移动到 i-1 位置
-    while(p != NULL && j < i - 1){
-        p = p->next;
-        j++;
-    }
+    p = getPriorNode(list, i);
 
     //插入位置超过 链表长度
     if(p==NULL) {
