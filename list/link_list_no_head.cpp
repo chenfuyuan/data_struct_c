@@ -26,16 +26,84 @@ void printError(bool,char*);    //打印错误
 bool printList(LinkList);     //遍历链表
 bool InsertNextNode(LNode *, Element);    //将元素插入指定节点(后插)
 bool InsertPriorNode(LNode *, Element);    //将元素插入指定节点(前插)
-
+bool ListDelete(LinkList &, int, Element&);    //按位置删除元素
+LNode* getPriorNode(LinkList &, int);    //获取指定位置 前一个节点
+bool DeleteNode(LNode *&);    //删除指定节点
 int main(){
     LinkList list;
     InitList(list);
     bool isSuccess = ListInsert(list, 1, 1);
     isSuccess = ListInsert(list, 2, 2);
+    ListInsert(list, 3, 3);
     printError(isSuccess, "插入");
     printList(list);
 
+    Element deleteReuslt = 0;
+    isSuccess = ListDelete(list, 3, deleteReuslt);
+    printError(isSuccess, "删除失败");
+    printf("\ndeleteResult:%d\n", deleteReuslt);
+    printf("删除后的表:");
+    printList(list);
+
+
+    isSuccess = DeleteNode(list->next);
+    printError(isSuccess, "删除节点");
+    printf("\n删除节点后结果:");
+    printList(list);
+
     return 0;
+}
+
+bool DeleteNode(LNode *&node){
+    if (node == NULL) {
+        return false;
+    }
+
+    if (node->next == NULL) {
+        free(node);
+        node = NULL;
+        return true;
+    }
+
+    LNode *nextNode = node->next;
+
+    node->data = nextNode->data;
+    node->next =nextNode->next;
+    free(nextNode);
+    return true;
+}
+
+/**
+ * 获取表list 第i个位置 前一个节点
+ * @param list 表
+ * @param i 位置
+ * @return 表list第i个位置的前一个节点
+ */
+LNode* getPriorNode(LinkList &list, int i){
+    LNode *p = list;
+    int j = 1;   //不带头节点，所以j指向第一个节点 节点位置为1
+    while (p != NULL && j < i - 1) {
+        p = p->next;
+        j++;
+    }
+    return p;
+}
+
+bool ListDelete(LinkList &list, int i, Element &element){
+    if (i < 1) {
+        return false;
+    }
+
+    if (i == 1) {
+        LNode *firstNode = list;
+        list = firstNode->next;
+        free(firstNode);
+        return true;
+    }
+
+    LNode *p = getPriorNode(list, i);
+    element = p->next->data;    //提取要被删除的数据
+    return DeleteNode(p->next);    //删除节点
 }
 
 /**
