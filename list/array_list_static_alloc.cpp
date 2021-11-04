@@ -21,6 +21,12 @@ void InitList(SqList &L) {
     L.length = 0;
 }
 
+/**
+ * 根据传入的数组array及数组的长度，生成对应的线性表L
+ * @param L 线性表
+ * @param array 数组
+ * @param length 数组长度
+ */
 void InitListByArray(SqList &L,int array[],int length){
     if(length<0){
         return;
@@ -103,13 +109,14 @@ bool ListDelete(SqList &L,int i, int &e){
  * @param L 线性表L
  * @param e 元素
  */
-void ListInsert(SqList &L, int e) {
-    if (L.length == MaxSize) {
+bool ListInsert(SqList &L, int e) {
+    if (L.length >= MaxSize) {
         printf("数组已满");
-        return;
+        return false;
     }
     L.data[L.length - 1] = e;
     L.length++;
+    return true;
 }
 
 /**
