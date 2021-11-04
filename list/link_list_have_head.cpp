@@ -28,21 +28,55 @@ bool InsertNextNode(LNode *, Element);    //将元素插入指定节点(后插)
 bool InsertPriorNode(LNode *, Element);    //将元素插入指定节点(前插)
 bool ListDelete(LinkList &, int, Element&);    //按位置删除元素
 LNode* getPriorNode(LinkList &, int);    //获取指定位置 前一个节点
+bool DeleteNode(LNode* &);    //删除节点
 
 int main(){
     LinkList list;
     InitList(list);
     bool isSuccess = ListInsert(list, 1, 1);
     isSuccess = ListInsert(list, 2, 2);
+    ListInsert(list, 3, 3);
     printError(isSuccess, "插入");
     printList(list);
 
     Element deleteReuslt = 0;
-    isSuccess = ListDelete(list, 2, deleteReuslt);
+    isSuccess = ListDelete(list, 3, deleteReuslt);
     printError(isSuccess, "删除失败");
-    printf("deleteResult:%d\n", deleteReuslt);
+    printf("\ndeleteResult:%d\n", deleteReuslt);
+    printf("删除后的表:");
+    printList(list);
+
+
+    isSuccess = DeleteNode(list->next->next);
+    printError(isSuccess, "删除节点");
+    printf("\n删除节点后结果:");
+    printList(list);
 
     return 0;
+}
+
+/**
+ * 删除节点
+ * @param node 节点
+ * @return 删除结果
+ */
+bool DeleteNode(LNode* &node){
+    if (node == NULL) {
+        return false;
+    }
+
+    if (node->next == NULL) {
+        free(node);
+        node = NULL;
+        return true;
+    }
+
+    LNode *nextNode = node->next;
+
+    node->data = nextNode->data;
+    node->next =nextNode->next;
+    free(nextNode);
+    return true;
 }
 
 /**
@@ -53,7 +87,7 @@ int main(){
  */
 LNode* getPriorNode(LinkList &list, int i){
     LNode *p = list;
-    int j = 0;
+    int j = 0;    //带头节点，所以j指向头节点 头节点位置为0
     while (p != NULL && j < i - 1) {
         p = p->next;
         j++;
@@ -86,13 +120,17 @@ bool ListDelete(LinkList &list, int i, Element &element){
         return false;
     }
 
-
+    element = p->next->data;    //提取要被删除的数据
+    return DeleteNode(p->next);    //删除节点
+    /*
     LNode* nextNode = p->next;    //要被删除的节点
     element = nextNode->data;    //提取要被删除的数据
     //删除元素
     p->next = nextNode->next;
     free(nextNode);
     return true;
+     */
+
 }
 
 /**
