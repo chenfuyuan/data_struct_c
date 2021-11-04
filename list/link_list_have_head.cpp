@@ -34,6 +34,12 @@ int main(){
     return 0;
 }
 
+
+/**
+ * 遍历打印单链表
+ * @param list 线性表
+ * @return 遍历结果
+ */
 bool printList(LinkList list){
     if (list == NULL) {
         return false;
@@ -49,6 +55,11 @@ bool printList(LinkList list){
 
 }
 
+/**
+ * 打印错误信息
+ * @param b 是否错误
+ * @param msg 错误信息
+ */
 void printError(bool b,char* msg){
     if(!b){
         printf("%s失败\n", msg);
