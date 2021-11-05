@@ -30,14 +30,19 @@ bool ListDelete(LinkList &, int, Element&);    //按位置删除元素
 bool DeleteNode(LNode* &);    //删除节点
 LNode *GetElem(LinkList, int);    //按位查找
 LNode *LocateElem(LinkList,Element);    //按值查找
+int Length(LinkList);    //求表长度
+
 int main(){
-    LinkList list;
+    LinkList list = NULL;
+    printf("未初始化时表长:%d\n", Length(list));
     InitList(list);
+    printf("初始化后表长:%d\n", Length(list));
     bool isSuccess = ListInsert(list, 1, 1);
     isSuccess = ListInsert(list, 2, 2);
     ListInsert(list, 3, 3);
     printError(isSuccess, "插入");
     printList(list);
+    printf("\n插入后表长:%d\n", Length(list));
 
     Element deleteReuslt = 0;
     isSuccess = ListDelete(list, 3, deleteReuslt);
@@ -45,6 +50,7 @@ int main(){
     printf("\ndeleteResult:%d\n", deleteReuslt);
     printf("删除后的表:");
     printList(list);
+    printf("\n删除后表长:%d\n", Length(list));
 
 
     isSuccess = DeleteNode(list->next->next);
@@ -61,6 +67,26 @@ int main(){
     }
 
     return 0;
+}
+
+/**
+ * 获取表list的长度
+ * @param list 表
+ * @return 表长
+ */
+int Length(LinkList list){
+    if (list == NULL) {
+        return -1;
+    }
+
+    int length = 0;
+    LNode *p = list->next;
+    while (p != NULL) {
+        length++;
+        p = p->next;
+    }
+
+    return length;
 }
 
 /**
