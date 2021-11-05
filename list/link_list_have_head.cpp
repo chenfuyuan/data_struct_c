@@ -27,8 +27,8 @@ bool printList(LinkList);     //遍历链表
 bool InsertNextNode(LNode *, Element);    //将元素插入指定节点(后插)
 bool InsertPriorNode(LNode *, Element);    //将元素插入指定节点(前插)
 bool ListDelete(LinkList &, int, Element&);    //按位置删除元素
-LNode* getPriorNode(LinkList &, int);    //获取指定位置 前一个节点
 bool DeleteNode(LNode* &);    //删除节点
+LNode *GetElem(LinkList, int);    //按位查找
 
 int main(){
     LinkList list;
@@ -56,6 +56,29 @@ int main(){
 }
 
 /**
+ * 按位查找
+ * 查找表list的第i个位置的节点
+ * @param list 表
+ * @param i 位置
+ * @return  表第i位的节点
+ */
+LNode *GetElem(LinkList list, int i) {
+    if (i < 0) {
+        return NULL;
+    }
+    int j = 0;    //代表当前指针 指到表第0个位置，即头结点
+    LNode *p = list;    //指向头结点的指针
+    //遍历指针到第i个位置
+    while (p != NULL && j < i) {
+        p = p->next;
+        j++;
+    }
+
+    return p;
+}
+
+
+/**
  * 删除节点
  * @param node 节点
  * @return 删除结果
@@ -79,21 +102,6 @@ bool DeleteNode(LNode* &node){
     return true;
 }
 
-/**
- * 获取表list 第i个位置 前一个节点
- * @param list 表
- * @param i 位置
- * @return 表list第i个位置的前一个节点
- */
-LNode* getPriorNode(LinkList &list, int i){
-    LNode *p = list;
-    int j = 0;    //带头节点，所以j指向头节点 头节点位置为0
-    while (p != NULL && j < i - 1) {
-        p = p->next;
-        j++;
-    }
-    return p;
-}
 
 /**
  * 将表list的第i个位置的元素删除，并赋值到element变量中进行返回
@@ -108,7 +116,7 @@ bool ListDelete(LinkList &list, int i, Element &element){
     }
 
     //寻找位置i的前一个节点
-    LNode *p = getPriorNode(list, i);
+    LNode *p = GetElem(list, i-1);
 
     //i值不合法
     if (p == NULL) {
@@ -226,7 +234,7 @@ bool ListInsert(LinkList &list, int i, Element element){
     }
     LNode *p;
     int j=0;
-    p = getPriorNode(list, i);
+    p = GetElem(list, i-1);
 
     //插入位置超过 链表长度
     if(p==NULL) {

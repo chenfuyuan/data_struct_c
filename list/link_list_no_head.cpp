@@ -27,8 +27,9 @@ bool printList(LinkList);     //遍历链表
 bool InsertNextNode(LNode *, Element);    //将元素插入指定节点(后插)
 bool InsertPriorNode(LNode *, Element);    //将元素插入指定节点(前插)
 bool ListDelete(LinkList &, int, Element&);    //按位置删除元素
-LNode* getPriorNode(LinkList &, int);    //获取指定位置 前一个节点
 bool DeleteNode(LNode *&);    //删除指定节点
+LNode *getElem(LinkList, int);    //按位查找节点
+
 int main(){
     LinkList list;
     InitList(list);
@@ -54,6 +55,32 @@ int main(){
     return 0;
 }
 
+/**
+ * 按位查找
+ * 查找表list的第i个位置的节点
+ * @param list 表
+ * @param i 位置
+ * @return  表第i位的节点
+ */
+LNode* getElem(LinkList list,int i){
+    if (i < 1) {
+        return NULL;
+    }
+    int j = 1;    //代表当前指针指向表的第1个位置
+    LNode *p = list;    //定义一个指针指向第一个位置
+    while (p != NULL && j < i) {
+        p = p->next;
+        j++;
+    }
+
+    return p;
+}
+
+/**
+ * 删除节点node
+ * @param node 要删除的节点
+ * @return 是否删除成功
+ */
 bool DeleteNode(LNode *&node){
     if (node == NULL) {
         return false;
@@ -74,21 +101,12 @@ bool DeleteNode(LNode *&node){
 }
 
 /**
- * 获取表list 第i个位置 前一个节点
+ * 将表list的第i个位置的元素删除，并赋值到element变量中进行返回
  * @param list 表
- * @param i 位置
- * @return 表list第i个位置的前一个节点
+ * @param i 要删除元素的位置
+ * @param element 放置删除元素的变量
+ * @return 是否删除成功
  */
-LNode* getPriorNode(LinkList &list, int i){
-    LNode *p = list;
-    int j = 1;   //不带头节点，所以j指向第一个节点 节点位置为1
-    while (p != NULL && j < i - 1) {
-        p = p->next;
-        j++;
-    }
-    return p;
-}
-
 bool ListDelete(LinkList &list, int i, Element &element){
     if (i < 1) {
         return false;
@@ -101,7 +119,7 @@ bool ListDelete(LinkList &list, int i, Element &element){
         return true;
     }
 
-    LNode *p = getPriorNode(list, i);
+    LNode *p = getElem(list, i-1);
     element = p->next->data;    //提取要被删除的数据
     return DeleteNode(p->next);    //删除节点
 }
@@ -197,15 +215,7 @@ bool ListInsert(LinkList &list, int i, Element element){
         return true;
     }
 
-    LNode* p;   //位置指针;
-    int j = 1;   //第一个位置
-    p = list;
-    //将指针停留在要插入的位置 前一个位置
-    //i-1 代表前一个位置 j表示当前位置
-    while (p != NULL && j < i-1) {
-        p = p->next;
-        j++;
-    }
+    LNode *p = getElem(list, i - 1);
 
     if (p == NULL) {
         return false;
