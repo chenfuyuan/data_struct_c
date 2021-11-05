@@ -35,6 +35,7 @@ LNode *LocateElem(LinkList, Element);    //按值查找节点
 int Length(LinkList);    //计算表长
 LinkList List_Tail_Insert(LinkList &);    //尾插法
 LNode* GetFirstNode(LinkList);    //获取第一个节点
+LinkList List_Head_Insert(LinkList &);    //头插法
 /**
  * 测试所有函数
  */
@@ -83,14 +84,47 @@ void test_tail_insert(){
     printList(list);
 }
 
+/**
+ * 测试单链表建立-头插法
+ */
+void test_head_insert(){
+    LinkList list;
+    List_Head_Insert(list);
+    printList(list);
+}
+
 int main(){
     //测试所有函数
     //test_all_function();
 
     //测试尾插法
-    test_tail_insert();
+    //test_tail_insert();
+
+    //测试头插法
+    test_head_insert();
 
     return 0;
+}
+
+/**
+ * 单链表建立-头插法
+ * 每个新加入的数据，都插入在表头
+ * @param list 表
+ * @return 建立后的链表
+ */
+LinkList List_Head_Insert(LinkList &list){
+    Element input;    //存放输入数据
+    InitList(list);
+    scanf("%d", &input);
+    while (input != INPUT_END) {
+        //定义一个节点，并赋值
+        LNode *node = getNewNode();
+        node->data = input;
+        node->next = list;    //将第一个节点链接到新节点后
+        list = node;    //新节点取代头结点
+        scanf("%d", &input);
+    }
+    return list;
 }
 
 /**
@@ -279,6 +313,9 @@ bool InsertNextNode(LNode *node, Element element){
     }
 
     LNode *newNode = getNewNode();
+    if (newNode==NULL) {    //内存分配失败
+        return false;
+    }
     newNode->data = element;
     newNode->next = node->next;
     node->next = newNode;

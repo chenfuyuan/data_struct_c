@@ -34,6 +34,7 @@ LNode *LocateElem(LinkList,Element);    //按值查找
 int Length(LinkList);    //求表长度
 LinkList List_Tail_Insert(LinkList&);    //单链表建立-尾插法
 LNode *GetFirstNode(LinkList);    //获得第一个节点
+LinkList List_Head_Insert(LinkList&);    //单链表建立-头插法
 
 /**
  * 测试用例-测试所有的函数
@@ -83,14 +84,40 @@ void test_tail_insert(){
     printList(list);
 }
 
+void test_head_insert(){
+    LinkList list;
+    List_Head_Insert(list);
+    printList(list);
+}
+
 int main(){
     //测试所有函数
     //test_all_function();
 
     //测试尾插法
-    test_tail_insert();
+    //test_tail_insert();
 
+    //测试头插法
+    test_head_insert();
     return 0;
+}
+
+/**
+ * 单链表建立-头插法
+ * 每个新加入的数据，都插入在表头
+ * @param list 表
+ * @return 建立后的链表
+ */
+LinkList List_Head_Insert(LinkList &list){
+    Element input;    //存放输入数据
+    InitList(list);
+    scanf("%d", &input);
+    while (input != INPUT_END) {
+        //在头结点后面插入一个节点
+        InsertNextNode(list, input);
+        scanf("%d", &input);
+    }
+    return list;
 }
 
 /**
