@@ -29,7 +29,7 @@ bool InsertPriorNode(LNode *, Element);    //将元素插入指定节点(前插)
 bool ListDelete(LinkList &, int, Element&);    //按位置删除元素
 bool DeleteNode(LNode* &);    //删除节点
 LNode *GetElem(LinkList, int);    //按位查找
-
+LNode *LocateElem(LinkList,Element);    //按值查找
 int main(){
     LinkList list;
     InitList(list);
@@ -51,9 +51,37 @@ int main(){
     printError(isSuccess, "删除节点");
     printf("\n删除节点后结果:");
     printList(list);
+    printf("\n");
+
+    LNode *locateElemNode = LocateElem(list, 1);
+    if(locateElemNode!=NULL) {
+        printf("element{1} = %d",locateElemNode->data);
+    } else {
+        printf("根据值未找到节点");
+    }
 
     return 0;
 }
+
+/**
+ * 按值进行查找
+ * 查找表list中第一次出现元素element的节点
+ * @param list 表
+ * @param element 元素
+ * @return 查找结果
+ */
+LNode *LocateElem(LinkList list, Element element){
+    if(list == NULL){
+        return NULL;
+    }
+    LNode *p = list->next;    //指向第1个节点
+    //遍历链表并判断值是否相等
+    while (p != NULL && p->data != element) {
+        p = p->next;
+    }
+    return p;
+}
+
 
 /**
  * 按位查找
@@ -175,6 +203,9 @@ bool InsertNextNode(LNode *node, Element element){
     }
 
     LNode *newNode = getNewNode();
+    if (newNode == NULL) {    //内存分配失败
+        return false;
+    }
     newNode->data = element;
     newNode->next = node->next;
     node->next = newNode;
@@ -234,7 +265,7 @@ bool ListInsert(LinkList &list, int i, Element element){
     }
     LNode *p;
     int j=0;
-    p = GetElem(list, i-1);
+    p = GetElem(list, i-1);    //找到第i-1位置的节点
 
     //插入位置超过 链表长度
     if(p==NULL) {
