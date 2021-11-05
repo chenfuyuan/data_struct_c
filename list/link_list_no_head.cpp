@@ -3,7 +3,9 @@
 */
 #include "stdio.h"
 #include "stdlib.h"
+#define INPUT_END 9999
 typedef int Element;
+
 
 typedef struct LNode{
     Element data;
@@ -31,7 +33,12 @@ bool DeleteNode(LNode *&);    //删除指定节点
 LNode *getElem(LinkList, int);    //按位查找节点
 LNode *LocateElem(LinkList, Element);    //按值查找节点
 int Length(LinkList);    //计算表长
-int main(){
+LinkList List_Tail_Insert(LinkList &);    //尾插法
+LNode* GetFirstNode(LinkList);    //获取第一个节点
+/**
+ * 测试所有函数
+ */
+void test_all_function(){
     LinkList list = NULL;
     printf("未初始化时表长:%d\n", Length(list));
     InitList(list);
@@ -65,7 +72,69 @@ int main(){
         printf("根据值未找到节点");
     }
 
+}
+
+/**
+ * 测试单链表建立-尾插法
+ */
+void test_tail_insert(){
+    LinkList list;
+    List_Tail_Insert(list);
+    printList(list);
+}
+
+int main(){
+    //测试所有函数
+    //test_all_function();
+
+    //测试尾插法
+    test_tail_insert();
+
     return 0;
+}
+
+/**
+ * 获取第一个节点
+ * @param list 表
+ * @return 第一个节点
+ */
+LNode* GetFirstNode(LinkList list){
+    return list;
+}
+
+/**
+ * 单链表建立-尾插法
+ * @param list 表
+ * @return 建立后的单链表
+ */
+LinkList List_Tail_Insert(LinkList &list){
+    Element input;    //声明一个变量，用于接收scanf的数据
+    InitList(list);
+
+    scanf("%d", &input);    //获取第一个输入
+    //第一个节点特殊处理
+    if (input != INPUT_END) {
+        list = getNewNode();
+        list->data = input;
+        list->next = NULL;
+        scanf("%d", &input);
+    }else{
+        return NULL;
+    }
+
+    LNode *tail = list;    //指向表尾
+    while (input != INPUT_END) {    //当输入为-1时结束
+        //创建节点
+        LNode *node = getNewNode();
+        node->data = input;
+
+        tail->next = node;    //插入元素
+        tail = node;    //将tail指针移动到表尾
+        scanf("%d", &input);    //接收下一个输入
+    }
+    tail->next = NULL;
+
+    return list;
 }
 
 /**
@@ -223,17 +292,22 @@ bool InsertNextNode(LNode *node, Element element){
  */
 bool printList(LinkList list){
     if (list == NULL) {
+        printf("[]");
         return false;
     }
     LNode *p;
-    p = list;
+    p = GetFirstNode(list);
+    printf("[");
     while(p!=NULL){
-        printf("%d ", p->data);
+        printf("%d", p->data);
+        if (p->next != NULL) {
+            printf(", ");
+        }
         p=p->next;
     }
+    printf("]");
 
     return true;
-
 }
 
 /**

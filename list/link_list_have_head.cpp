@@ -3,6 +3,7 @@
 */
 #include "stdio.h"
 #include "stdlib.h"
+#define INPUT_END 9999
 typedef int Element;
 
 typedef struct LNode{
@@ -31,8 +32,13 @@ bool DeleteNode(LNode* &);    //删除节点
 LNode *GetElem(LinkList, int);    //按位查找
 LNode *LocateElem(LinkList,Element);    //按值查找
 int Length(LinkList);    //求表长度
+LinkList List_Tail_Insert(LinkList&);    //单链表建立-尾插法
+LNode *GetFirstNode(LinkList);    //获得第一个节点
 
-int main(){
+/**
+ * 测试用例-测试所有的函数
+ */
+void test_all_function(){
     LinkList list = NULL;
     printf("未初始化时表长:%d\n", Length(list));
     InitList(list);
@@ -66,7 +72,60 @@ int main(){
         printf("根据值未找到节点");
     }
 
+}
+
+/**
+ * 测试用例-单链表建立-尾插法
+ */
+void test_tail_insert(){
+    LinkList list;
+    List_Tail_Insert(list);
+    printList(list);
+}
+
+int main(){
+    //测试所有函数
+    //test_all_function();
+
+    //测试尾插法
+    test_tail_insert();
+
     return 0;
+}
+
+/**
+ * 获取第一个节点
+ * @param list 表
+ * @return 第一个节点
+ */
+LNode *GetFirstNode(LinkList list){
+    return list->next;
+}
+
+/**
+ * 单链表建立-尾插法
+ * @param list 空的链表
+ * @return 建立后的单链表
+ */
+LinkList List_Tail_Insert(LinkList &list){
+    Element input;    //声明一个变量，用于接收scanf的数据
+    bool init_success = InitList(list);
+    if (!init_success) {
+        return NULL;
+    }
+    LNode *tail = list;    //指向表尾
+    scanf("%d", &input);    //获取第一个输入
+    while (input != INPUT_END) {    //当输入为-1时结束
+        //创建节点
+        LNode *node = getNewNode();
+        node->data = input;
+
+        tail->next = node;    //插入元素
+        tail = node;    //将tail指针移动到表尾
+        scanf("%d", &input);    //接收下一个输入
+    }
+    tail->next = NULL;    //缺失这句，会造成printList时死循环
+    return list;
 }
 
 /**
@@ -246,17 +305,22 @@ bool InsertNextNode(LNode *node, Element element){
  */
 bool printList(LinkList list){
     if (list == NULL) {
+        printf("[]");
         return false;
     }
     LNode *p;
-    p = list->next;
+    p = GetFirstNode(list);
+    printf("[");
     while(p!=NULL){
-        printf("%d ", p->data);
+        printf("%d", p->data);
+        if (p->next != NULL) {
+            printf(", ");
+        }
         p=p->next;
     }
+    printf("]");
 
     return true;
-
 }
 
 /**
