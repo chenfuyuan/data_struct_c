@@ -33,9 +33,12 @@ bool DeleteNode(LNode *&);    //删除指定节点
 LNode *getElem(LinkList, int);    //按位查找节点
 LNode *LocateElem(LinkList, Element);    //按值查找节点
 int Length(LinkList);    //计算表长
-LinkList List_Tail_Insert(LinkList &);    //尾插法
+LinkList Init_List_Tail_Insert(LinkList &);    //单链表建立-尾插法
 LNode* GetFirstNode(LinkList);    //获取第一个节点
-LinkList List_Head_Insert(LinkList &);    //头插法
+LinkList Init_List_Head_Insert(LinkList &);    //单链表建立-头插法
+bool List_Insert_Tail(LNode*&,Element);    //尾插法
+LNode *GetLateNode(LinkList);    //获取表尾节点
+bool List_Insert_Head(LinkList&, Element);    //头插法
 /**
  * 测试所有函数
  */
@@ -80,7 +83,7 @@ void test_all_function(){
  */
 void test_tail_insert(){
     LinkList list;
-    List_Tail_Insert(list);
+    Init_List_Tail_Insert(list);
     printList(list);
 }
 
@@ -89,7 +92,7 @@ void test_tail_insert(){
  */
 void test_head_insert(){
     LinkList list;
-    List_Head_Insert(list);
+    Init_List_Head_Insert(list);
     printList(list);
 }
 
@@ -107,21 +110,78 @@ int main(){
 }
 
 /**
+ * 头插法
+ * @param list 表
+ * @param element 插入元素
+ * @return 插入结果
+ */
+bool List_Insert_Head(LinkList &list, Element element){
+    LNode *node = getNewNode();
+    if (node == NULL) {    //内存分配失败
+        return false;
+    }
+    node->data = element;
+    node->next = list;
+    list = node;
+    return true;
+}
+
+
+/**
+ * 尾插法
+ * 将元素element 插入尾节点tail的后面
+ * @param tail 尾指针
+ * @param element 插入元素
+ * @return 插入结果
+ */
+bool List_Insert_Tail(LNode* &tail,Element element){
+    if (tail == NULL) {
+        return false;
+    }
+
+    //如果当前节点不是表尾节点，将指针指向表尾节点
+    if (tail->next != NULL) {
+        tail = GetLateNode(tail);
+    }
+    //插入数据
+    InsertNextNode(tail, element);
+    tail = tail->next;
+    return true;
+}
+
+/**
+ * 获取表list的最后一个节点
+ * @param list 表
+ * @return 表尾节点
+ */
+LNode* GetLateNode(LinkList list){
+    if (list == NULL) {
+        return NULL;
+    }
+
+    LNode *tail = list;
+
+    //遍历到表尾，当->next==NULL时，证明已到表尾
+    while (tail->next != NULL) {
+        tail = tail->next;
+    }
+
+    return tail;
+}
+
+/**
  * 单链表建立-头插法
  * 每个新加入的数据，都插入在表头
  * @param list 表
  * @return 建立后的链表
  */
-LinkList List_Head_Insert(LinkList &list){
+LinkList Init_List_Head_Insert(LinkList &list){
     Element input;    //存放输入数据
     InitList(list);
     scanf("%d", &input);
     while (input != INPUT_END) {
-        //定义一个节点，并赋值
-        LNode *node = getNewNode();
-        node->data = input;
-        node->next = list;    //将第一个节点链接到新节点后
-        list = node;    //新节点取代头结点
+        //进行头插法
+        List_Insert_Head(list, input);
         scanf("%d", &input);
     }
     return list;
@@ -141,7 +201,7 @@ LNode* GetFirstNode(LinkList list){
  * @param list 表
  * @return 建立后的单链表
  */
-LinkList List_Tail_Insert(LinkList &list){
+LinkList Init_List_Tail_Insert(LinkList &list){
     Element input;    //声明一个变量，用于接收scanf的数据
     InitList(list);
 
@@ -159,11 +219,7 @@ LinkList List_Tail_Insert(LinkList &list){
     LNode *tail = list;    //指向表尾
     while (input != INPUT_END) {    //当输入为-1时结束
         //创建节点
-        LNode *node = getNewNode();
-        node->data = input;
-
-        tail->next = node;    //插入元素
-        tail = node;    //将tail指针移动到表尾
+        List_Insert_Tail(tail, input);
         scanf("%d", &input);    //接收下一个输入
     }
     tail->next = NULL;
