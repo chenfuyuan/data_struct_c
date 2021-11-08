@@ -1,15 +1,16 @@
 #include<stdio.h>
-#define MaxSize 10
+#define MaxSize 3
 #define array_size(array) (sizeof(array)/sizeof(array[0]))
 typedef int ElemType;
 
 /**
- * 使用 牺牲一个空间的方法，来判断队列空还是满的循环数列
+ * 使用tag标记上一次操作类型，来辅助判断队列空还是满的，循环数列
  */
 typedef struct {
     ElemType data[MaxSize];
     int front;    //队头指针
     int rear;    //队尾指针
+    int tag;    //标记上一次操作为出队还是入队 出队为0，入队为1
 }Queue;
 
 bool Init(Queue &queue);    //初始化
@@ -27,13 +28,16 @@ void test_all_function() {
     printf("%d\n", (1 % MaxSize));
     Queue queue;
     Init(queue);
+    int deQueueResult = 0;
+    DeQueue(queue, deQueueResult);
     EnQueue(queue, 1);
     EnQueue(queue, 2);
     EnQueue(queue, 3);
+    EnQueue(queue, 4);
     printf("入队结果:");
     Print(queue);
     printf("当前队列元素个数为:%d\n", Size(queue));
-    int deQueueResult = 0;
+
     DeQueue(queue, deQueueResult);
     printf("出队元素:%d\n", deQueueResult);
 
@@ -73,6 +77,7 @@ bool DeQueue(Queue &queue, ElemType &elem){
     elem = queue.data[queue.front];
     queue.data[queue.front] = 0;
     queue.front = GetNextIndex(queue.front);
+    queue.tag = 0;
     return true;
 }
 
@@ -82,7 +87,7 @@ bool DeQueue(Queue &queue, ElemType &elem){
  * @return 队列满则返回true
  */
 bool Full(Queue queue){
-    return GetNextIndex(queue.rear) == queue.front;
+    return queue.rear == queue.front && queue.tag == 1;
 }
 
 /**
@@ -102,7 +107,7 @@ bool EnQueue(Queue &queue,ElemType elem){
     //将元素添加到队尾
     queue.data[queue.rear] = elem;
     queue.rear= GetNextIndex(queue.rear);
-
+    queue.tag = 1;
     return true;
 }
 /**
@@ -119,7 +124,7 @@ int GetNextIndex(int index){
  * @return 队列为空,返回true
  */
 bool Empty(Queue queue){
-    return queue.rear == queue.front;
+    return queue.rear == queue.front && queue.tag == 0;
 }
 
 /**
@@ -137,13 +142,15 @@ bool Print(Queue queue){
     int front = queue.front;
     int rear = queue.rear;
     ElemType *data = queue.data;
+    int tag = 1;
     printf("[");
-    while (front != rear) {    //遍历到数列为空
+    while (front != rear || tag==1) {    //遍历到数列为空
         printf("%d", data[front]);
         if (GetNextIndex(front) != rear) {
             printf(", ");
         }
         front = GetNextIndex(front);
+        tag = 0;
     }
     printf("]\n");
 
@@ -159,5 +166,6 @@ bool Init(Queue &queue){
     for (int i = 0, length = array_size(queue.data); i < length; ++i) {
         queue.data[i] = 0;
     }
+    queue.tag = 0;
     return true;
 }

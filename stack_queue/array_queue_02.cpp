@@ -4,7 +4,7 @@
 typedef int ElemType;
 
 /**
- * 不带size的循环队列
+ * 使用size，辅助判断队列空和满的 循环数列
  */
 typedef struct {
     ElemType data[MaxSize];
