@@ -1,5 +1,5 @@
 /**
- * 使用 带头结点单链表的形式，实现队列
+ * 使用 不带头结点单链表的形式，实现队列
  */
 #include<stdio.h>
 #include<stdlib.h>
@@ -51,9 +51,12 @@ void test_all_function() {
     printf("出队元素:%d\n", deQueueResult);
     DeQueue(queue, deQueueResult);
     printf("出队元素:%d\n", deQueueResult);
-    DeQueue(queue, deQueueResult);
-    printf("出队元素:%d\n", deQueueResult);
-
+    bool isSuccess = DeQueue(queue, deQueueResult);
+    if(!isSuccess){
+        printf("出队失败。\n");
+    }else{
+        printf("出队元素:%d\n", deQueueResult);
+    }
     printf("出队结果:");
     Print(queue);
 
@@ -65,18 +68,27 @@ int main() {
 }
 
 /**
+ * 返回队列queue的大小
+ * @param queue 队列
+ * @return 队列大小
+ */
+int Size(Queue queue){
+    return queue.size;
+}
+
+/**
  * 遍历打印当前队列
  * @param queue 队列
  * @return 遍历结果
  */
 bool Print(Queue queue){
     if (Empty(queue)) {
-        printf("[]");
+        printf("[] size = %d", Size(queue));
         return true;
     }
 
     //指向第一个元素
-    Node *p = queue.front->next;
+    Node *p = queue.front;
 
     printf("[");
     while (p != NULL) {
@@ -87,8 +99,7 @@ bool Print(Queue queue){
         }
         p = p->next;
     }
-    printf("]\n");
-
+    printf("] size = %d\n", Size(queue));
     return true;
 }
 
@@ -105,14 +116,14 @@ bool DeQueue(Queue &queue, ElemType &elem){
         return false;
     }
     //返回表头元素
-    elem = queue.front->next ->data;
+    elem = queue.front->data;
 
     //删除表头元素
-    Node *first = queue.front->next;
-    queue.front->next = first->next;
+    Node *first = queue.front;
+    queue.front = first->next;
 
     //当出队 对象 为队列最后一个元素时，如果使用free直接删除，会导致queue.rear指向丢失，应将queue.rear指向头节点
-    if (first->next == NULL) {
+    if (queue.front == NULL) {
         queue.rear = queue.front;
     }
 
@@ -137,10 +148,14 @@ bool EnQueue(Queue &queue, ElemType elem){
     }
     //插入表尾
     node->data = elem;
-    queue.rear->next = node;
 
-    //尾节点后移
-    queue.rear = node;
+    if (Empty(queue)) {
+        queue.front = queue.rear = node;
+    }else{
+        queue.rear->next = node;
+        //尾节点后移
+        queue.rear = node;
+    }
 
     //队列大小增加
     queue.size++;
@@ -153,7 +168,7 @@ bool EnQueue(Queue &queue, ElemType elem){
  * @return 如果队列为空，则返回true
  */
 bool Empty(Queue queue){
-    return queue.front == queue.rear;
+    return queue.front == NULL;
 }
 
 /**
@@ -172,10 +187,7 @@ Node* GetNewNode(){
  * @return 初始化是否成功
  */
 bool Init(Queue &queue){
-    Node *node = GetNewNode();
-    if (node == NULL) {    //内存分配失败
-        return false;
-    }
-    queue.front = queue.rear = node;
+    queue.front = NULL;
+    queue.rear = NULL;
     queue.size = 0;
 }
