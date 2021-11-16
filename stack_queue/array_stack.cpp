@@ -1,7 +1,7 @@
 #include<stdio.h>
 #define MaxSize 10
 #define array_size(array) (sizeof(array)/sizeof(array[0]))
-typedef int ElemType;
+typedef char ElemType;
 typedef struct{
     ElemType data[MaxSize];    //静态数组存储栈元素
     int top;    //指向栈顶指针
@@ -32,8 +32,143 @@ void test_all_function(){
     PrintStack(stack);
 }
 
+/**
+ * 判断是否是左括号
+ * @return 如果是左括号，则返回true
+ */
+bool is_left_bracket(char ch){
+    return ch == '{' || ch == '[' || ch == '(';
+}
+
+/**
+ * 判断是否是右括号
+ * @return 如果是右括号，则返回true
+ */
+bool is_right_bracket(char ch){
+    return ch == '}' || ch == ']' || ch == ')';
+}
+
+/**
+ * 判断字符是否为括号
+ * @param ch 字符
+ * @return 如果为括号返回true
+ */
+bool is_bracket(char ch){
+    return is_left_bracket(ch) || is_right_bracket(ch);
+}
+
+/**
+ * 假设left_bracket和right_brakcet 两个字符 都为括号
+ * 将左括号left_bracket 与 右括号right_bracket 进行匹配，如果匹配成功，返回true,否则返回false
+ * @param left_bracket 左括号
+ * @param right_bracket 右括号
+ * @return 是否匹配成功
+ */
+bool match(char left_bracket, char right_bracket){
+    if (!is_left_bracket(left_bracket)) {
+        printf("匹配括号时发生错误:{%s}不为左括号!\n", left_bracket);
+        return false;
+    }
+    if (!is_right_bracket(right_bracket)) {
+        printf("匹配括号时发生错误:{%s}不为右括号!\n", right_bracket);
+        return false;
+    }
+
+    if (left_bracket == '{' && right_bracket == '}') {
+        return true;
+    }
+
+    if (left_bracket == '[' && right_bracket == ']') {
+        return true;
+    }
+
+    if (left_bracket == '(' && right_bracket == ')') {
+        return true;
+    }
+
+    return false;
+
+}
+
+/**
+ * 判断输入的字符串str中，括号是否匹配，如果匹配成功返回true,否则返回false
+ * @param str 输入的字符串
+ * @return 匹配是否成功
+ */
+bool bracket_match(char *str){
+    //初始化栈
+    SqStack stack;
+    InitStack(stack);
+    bool result = false;
+    //解析字符串
+    char ch = *(str++);
+    while (ch != '\0') {
+        if (!is_bracket(ch)) {    //如果字符不为括号时，跳过该字符
+            ch = *(str++);
+            continue;
+        }
+
+        if (is_left_bracket(ch)) {
+            //如果字符为左括号时，进行入栈操作
+            result = Push(stack, ch);
+            if (!result) {
+                printf("系统错误!(入栈时，栈满)\n");
+            }
+        }
+
+        if (is_right_bracket(ch)) {
+            //如果字符为右括号时，进行出栈操作
+            ElemType popResult = ' ';
+            result = Pop(stack, popResult);
+
+            //处理出栈结果，如果出栈失败，表示栈内无元素
+            if (!result) {
+                printf("匹配失败，缺少左括号!\n");
+                return false;
+            }
+
+            //匹配括号
+            if (!match(popResult, ch)) {
+                printf("匹配失败。左括号为{%c},右括号为{%c}!\n", popResult, ch);
+                return false;
+            }
+        }
+
+        if (result == false) {
+            return result;
+        }
+        ch = *(str++);
+    }
+
+    //在循环后，栈内依然有元素，则表示匹配失败，缺少右括号
+    if (!StackEmpty(stack)) {
+        while (!StackEmpty(stack)) {
+            ElemType popResult = ' ';
+            result = Pop(stack, popResult);
+            if (!result) {
+                printf("系统错误(栈为空)!\n");
+                return false;
+            }
+
+            printf("缺乏{%c}对应的右括号!\n", popResult);
+        }
+        return false;
+    }
+}
+
+/**
+ * 应用:括号匹配
+ */
+void test_bracket_match(){
+    char str[30] = {0};
+    scanf("%s", str);
+    bool result = bracket_match(str);
+    printf("匹配成功。\n");
+}
+
 int main() {
-    test_all_function();
+    //test_all_function();
+    test_bracket_match();
 }
 
 /**
