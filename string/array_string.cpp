@@ -18,6 +18,7 @@ int StrCompare(AString source_01, AString source_02);    //比较操作
 int index(AString string, AString source);    //定位操作
 int index_kmp(AString string, AString source, int next[]);    //定位操作-kmp算法
 bool getNextArray(AString source,int *next);   //构造辅助数组 next
+bool getNextArray_02(AString source,int *next);   //构造辅助数组 next
 /**
  * 测试用例-测试所有方法
  */
@@ -49,10 +50,10 @@ void test_all_function() {
     printf("index:%d\n", pos);
 
     //======index_kmp
-    sub.data = " google";
-    sub.length = 6;
+    sub.data = " ababaaababaa";
+    sub.length = 12;
     int next[sub.length + 1];
-    getNextArray(sub,next);
+    getNextArray_02(sub,next);
 
     printf("next:[");
     for (int i = 1; i < (sub.length+1); ++i){
@@ -63,8 +64,8 @@ void test_all_function() {
     }
     printf("]\n");
 
-    pos = index_kmp(string, sub, next);
-    printf("index(kmp):%d\n", pos);
+    //pos = index_kmp(string, sub, next);
+    //printf("index(kmp):%d\n", pos);
 
 
 }
@@ -104,6 +105,22 @@ bool getNextArray(AString source,int *next) {
 
     }
     return true;
+}
+
+bool getNextArray_02(AString source,int *next){
+    int length = source.length;
+    int i = 1, j = 0;
+    next[1] = 0;
+    while (i < length) {
+        if (j == 0 || source.data[i] == source.data[j]) {
+            i++;
+            j++;
+            next[i] = j;
+        }else{
+            j = next[j];
+        }
+
+    }
 }
 
 /**
