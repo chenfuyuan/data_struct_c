@@ -20,10 +20,10 @@ typedef struct VertexNode{
 }VertexNode;
 
 //邻接表
-typedef struct List{
+typedef struct Graph{
     VertexNode array[MAX_SIZE];    //顶点数组
     int vertex_num,edge_num;    //顶点数，边数
-};
+}Graph;
 
 
 /**

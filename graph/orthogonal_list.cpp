@@ -22,10 +22,10 @@ typedef struct VertexNode{
 }VertexNode;
 
 //十字链表
-typedef struct List{
+typedef struct Graph{
     VertexNode array[MAX_SIZE];    //顶点列表
     int vertex_num,edge_num;    //顶点数，边数
-};
+}Graph;
 
 /**
  * 测试用例-测试所有方法

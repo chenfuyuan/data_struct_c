@@ -17,18 +17,20 @@ typedef struct Node{
     int info;    //权值
 }Node;
 
-typedef struct Matrix{
+typedef struct Graph{
     Node array[MAX_SIZE][MAX_SIZE];    //使用二维数组存储图
     int vertex_num, edge_num;    //顶点数，边数
-}Matrix;
+}Graph;
 
-
+bool Init()
 
 /**
  * 测试用例-测试所有方法
  */
 void test_all_function() {
-
+    //初始化图
+    //输入数据
+    //进行广度优先遍历
 }
 
 int main() {
