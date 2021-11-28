@@ -127,6 +127,7 @@ void BFS_Traverse(Graph graph){
 bool AddEdge(Graph &graph, int x, int y){
     graph.edge[x][y] = 1;
     graph.edge[y][x] = 1;
+    graph.edge_num++;
 }
 
 /**
